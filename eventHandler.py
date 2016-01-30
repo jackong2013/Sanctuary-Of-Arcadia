@@ -55,8 +55,8 @@ class EventHandler(object):
 
 	def getGeneratorMultipliers(self):
 		return {
-			FirstGenerator.Woodmill: self.woodmillMultiplier
-			FirstGenerator.IronForge: self.ironForgeMultiplier
+			FirstGenerator.Woodmill: self.woodmillMultiplier,
+			FirstGenerator.IronForge: self.ironForgeMultiplier,
 			FirstGenerator.GoldMine: self.goldMineMultiplier
 		}
 
