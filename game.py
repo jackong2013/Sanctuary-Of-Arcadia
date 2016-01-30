@@ -1,13 +1,16 @@
 from action import Action
+from eventHandler import EventHandler
+from player import Player
 
 class Game(object):
-	def __init__(self, players):
-		self.players = players
-		# self.eventHandler = eventHandler()
+	def __init__(self, playerIds):
+		# objectiveIndex = int(math.floor(random.random() * OBJECTIVE_COUNT))
+		# for playerId in playerIds:
+		# 	self.players = Player(playerId, Objective(objectiveIndex))
+		self.eventHandler = EventHandler()
 		# self.logicHandler = logicHandler()
 
-	#options is a dictionary contains playerId for all actions
-	def handleAction(self, action, options):
+	def handleAction(self, playerId, action, options):
 		if action is Action.trade:
 			print "trade"
 			#options contains targetPlayerIds, resourceOffer, resourceRequest
