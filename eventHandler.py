@@ -4,7 +4,7 @@ from event import Event
 
 class EventHandler(object):
 	MAX_COUNT_DOWN_ROUNDS_FOR_EVENT = 3 # in n rounds the event happens, next round, 2nd round, 3rd round .. nth round might happen
-	NUMBER_OF_EVENTS = 11
+	NUMBER_OF_EVENTS = len(list(Event))
 	ANGRY_TREE_IMP_MULTIPLIER = 0
 	ARMS_BAN_MULTIPLIER = 0
 	MINERS_STRIKE_MULTIPLIER = 0
