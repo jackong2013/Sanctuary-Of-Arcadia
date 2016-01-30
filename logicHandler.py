@@ -123,11 +123,12 @@ class LogicHandler(object):
 		for generator, qty in generators.items():
 			resource = LogicHandler.GENERATOR_CAPACITY[generator]['resource']
 			capacity = LogicHandler.GENERATOR_CAPACITY[generator]['capacity']
-			income = qty * multipliers[generator] * capacity
+			multiplier = 1 if generator not in multipliers.keys() else multipliers[generator]
+			income = qty * multiplier * capacity
 			player.update_resource(resource, income)
 
 	def upgrade_resource(self, player, target):
-		if ingredient_suffice(player, target):
+		if self.ingredient_suffice(player, target):
 			player.update_resource(target, 1)
 			for res, cost in LogicHandler.COST[target].items():
 				player.update_resource(res, -1 * cost)
@@ -136,7 +137,7 @@ class LogicHandler(object):
 			return False
 
 	def upgrade_generator(self, player, target):
-		if ingredient_suffice(player, target):
+		if self.ingredient_suffice(player, target):
 			player.update_generator(target, 1)
 			for res, cost in LogicHandler.COST[target].items():
 				if res in list(FirstGenerator):
@@ -147,4 +148,4 @@ class LogicHandler(object):
 		else:
 			return False
 
-	# def build(self, player, target)
+	# def build(self, player, target):
