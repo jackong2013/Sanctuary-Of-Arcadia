@@ -48,7 +48,7 @@ game = Game(None)
 @app.route('/<username>', methods=['GET', 'POST'])
 def login(username):
 	if request.method == 'POST':
-		pass
+		return "post success woohooo!: " + username
 	return "this is the login screen: " + username
 
 @socketio.on('join')
