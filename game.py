@@ -31,5 +31,11 @@ class Game(object):
 		else: 
 			print("error action")
 
+	def playerLeft(self, player_name):
+		for player in self.players:
+			if (player_name == player.get_name()):
+				self.players.remove(player)
+				break;
+
 
 

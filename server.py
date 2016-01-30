@@ -38,12 +38,16 @@ from threading import Thread
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
+import json
+
 from game import *
+from player import Player
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
-game = Game(None)
+game = Game([])
+room = "hardcode me"
 
 @app.route('/<username>', methods=['GET', 'POST'])
 def login(username):
@@ -53,13 +57,57 @@ def login(username):
 
 @socketio.on('join')
 def join(data):
-    new_player = data
-    print type(data)
-    print data
-    #current_players = game.players
-    #print type(current_players)
-    current_players = ['hardcode1', 'hardcode2', 'hardcode3', 'hardcode4']
-    emit('joinSuccessul', current_players)
+    for player in game.players:
+        if (data['name'] == player.get_name()):
+            print 'Error, same name'
+            emit('joinFailed', "Error: A player already has the same name!")
+            return
+
+    new_player = Player(data['name'], 'OBJOBJOBJ')
+    game.players.append(new_player)
+    print new_player.get_name() + ' has joined!'
+
+    current_players_name = []
+    for player in game.players:
+        current_players_name.append(player.get_name())
+
+    join_room(room)
+    emit('joinSuccessful', current_players_name, room=room)
+
+@socketio.on('move')
+def doAction(data):
+    from_player = data['from']
+    player_action = data['action']
+    options = None
+    action = None
+
+    for stuff in Action:
+        if (stuff.name == player_action):
+            action = stuff
+            break;
+
+    if (isinstance(action, Action)):
+        game.handleAction(action, options)
+    else:
+        print 'Error, invalid action'
+
+@socketio.on('leave')
+def leave(data):
+    player_name = data['name']
+    game.playerLeft(player_name)
+    print player_name + ' has left!'
+
+    current_players_name = []
+    for player in game.players:
+        current_players_name.append(player.get_name())
+
+    leave_room(room)
+    emit('playerLeft', current_players_name, room=room)
+
+
+@socketio.on('disconnect')
+def disconnect():
+    print('Client disconnected', request.sid)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0')
