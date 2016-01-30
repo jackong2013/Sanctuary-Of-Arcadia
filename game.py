@@ -1,9 +1,24 @@
 from action import Action
+from eventHandler import EventHandler
+from player import Player
+from objective import Objective
+import random
+import math
 
 class Game(object):
-	def __init__(self, players):
-		self.players = players
-		# self.eventHandler = eventHandler()
+	OBJECTIVE_COUNT = len(list(Objective))
+	OBJECTIVE_REQUIREMENTS = {
+		Objective.GrandSanctuary : [5, 2, 2]
+		Objective.PhoenixsForge : [2, 5, 2]
+		Objective.BankOfSmaug : [2, 2, 5]
+		Objective.PegasusCruiser : [3, 3, 3] 
+	}
+
+	def __init__(self, playerIds):
+		objectiveIndex = int(math.floor(random.random() * OBJECTIVE_COUNT))
+		for playerId in playerIds:
+			self.players = Player(playerId, Objective(objectiveIndex))
+		self.eventHandler = EventHandler()
 		# self.logicHandler = logicHandler()
 
 	#options is a dictionary contains playerId for all actions

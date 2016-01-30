@@ -38,10 +38,12 @@ from threading import Thread
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
+from game import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
+game = Game(None)
 
 @app.route('/<username>', methods=['GET', 'POST'])
 def login(username):
@@ -49,6 +51,15 @@ def login(username):
 		return "post success woohooo!: " + username
 	return "this is the login screen: " + username
 
+@socketio.on('join')
+def join(data):
+    new_player = data
+    print type(data)
+    print data
+    #current_players = game.players
+    #print type(current_players)
+    current_players = ['hardcode1', 'hardcode2', 'hardcode3', 'hardcode4']
+    emit('joinSuccessul', current_players)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0')
