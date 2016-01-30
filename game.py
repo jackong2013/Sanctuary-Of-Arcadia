@@ -1,12 +1,10 @@
 from action import Action
 
 class Game(object):
-	players = []
-	eventHandler = None
-	logicHandler = None 
-
 	def __init__(self, players):
 		self.players = players
+		# self.eventHandler = eventHandler()
+		# self.logicHandler = logicHandler()
 
 	#options is a dictionary contains playerId for all actions
 	def handleAction(self, action, options):
