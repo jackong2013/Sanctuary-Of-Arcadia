@@ -1,6 +1,7 @@
 import random
 import math
 from event import Event
+from items import FirstGenerator
 
 class EventHandler(object):
 	MAX_COUNT_DOWN_ROUNDS_FOR_EVENT = 3 # in n rounds the event happens, next round, 2nd round, 3rd round .. nth round might happen
@@ -51,6 +52,13 @@ class EventHandler(object):
 
 	def getBankMultiplier(self):
 		return self.bankMultiplier
+
+	def getGeneratorMultipliers(self):
+		return {
+			FirstGenerator.Woodmill: self.woodmillMultiplier
+			FirstGenerator.IronForge: self.ironForgeMultiplier
+			FirstGenerator.GoldMine: self.goldMineMultiplier
+		}
 
 	def randomUpcomingEvent(self):
 		for i in range(0, EventHandler.NUMBER_OF_EVENTS):
