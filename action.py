@@ -1,9 +1,10 @@
 from enum import Enum
 
 class Action(Enum):
-	build = 1
-	gather = 2
-	trade = 3
-	destroy = 4
-	upgradeResource = 5
-	upgradeResourceGenerator = 6
+	Build = 1
+	Gather = 2
+	TradeRequest = 3
+	TradeAccept = 4
+	Destroy = 5
+	UpgradeResource = 6
+	UpgradeResourceGenerator = 7

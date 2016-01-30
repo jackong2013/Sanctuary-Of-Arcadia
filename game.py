@@ -11,21 +11,24 @@ class Game(object):
 		# self.logicHandler = logicHandler()
 
 	def handleAction(self, playerId, action, options):
-		if action is Action.trade:
-			print "trade"
+		if action is Action.TradeRequest:
+			print "trade offer"
 			#options contains targetPlayerIds, resourceOffer, resourceRequest
-		elif action is Action.build:
-			print "build"
+		if action is Action.TradeAccept:
+			print "Trade accept"
+			#options contains tradeId
+		elif action is Action.Build:
+			print "Build"
 			#options contains buildingType
-		elif action is Action.gather:
+		elif action is Action.Gather:
 			print "gather"
-		elif action is Action.destroy:
+		elif action is Action.Destroy:
 			print "destroy"
 			#options contains targetPlayerIds with size of one, buildingType  
-		elif action is Action.upgradeResource:
+		elif action is Action.UpgradeResource:
 			print "upgrade resource"
 			#options contains resourceType
-		elif action is Action.upgradeResourceGenerator:
+		elif action is Action.UpgradeResourceGenerator:
 			print "upgrade resource generator"
 			#options contains resourceGeneratorType
 		else: 

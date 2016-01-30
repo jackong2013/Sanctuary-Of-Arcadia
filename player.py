@@ -7,20 +7,20 @@ class Player(object):
 		self.objective = objective
 		self.inventoryFlag = False
 		self.resources = {
-			FirstResource.WOOD: 3,
-			FirstResource.IRON: 3,
-			FirstResource.GOLD: 3,
-			SecondResource.LUMBER: 0,
-			SecondResource.MITHRIL: 0,
-			SecondResource.TREASURE: 0
+			FirstResource.Wood: 3,
+			FirstResource.Iron: 3,
+			FirstResource.Gold: 3,
+			SecondResource.Lumber: 0,
+			SecondResource.Mithril: 0,
+			SecondResource.Treasure: 0
 		}
 		self.generators = {
-			FirstGenerator.WOODMILL: 0,
-			FirstGenerator.IRON_FORGE: 0,
-			FirstGenerator.GOLD_MINE: 0,
-			SecondGenerator.LUMBER_MILL: 0,
-			SecondGenerator.MITHRIL_FORGE: 0,
-			SecondGenerator.TREASURE_MINE: 0
+			FirstGenerator.Woodmill: 1,
+			FirstGenerator.IronForge: 2,
+			FirstGenerator.GoldMine: 3,
+			SecondGenerator.LumberMill: 0,
+			SecondGenerator.MithrilForge: 0,
+			SecondGenerator.TreasureMine: 0
 		}
 
 	# Accessor for the name
