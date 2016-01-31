@@ -1,5 +1,6 @@
 from items import FirstResource, SecondResource, FirstGenerator, SecondGenerator
 from objective import Objective
+import random
 
 class LogicHandler(object):
 	INVENTORY_CAP = 10
@@ -157,3 +158,48 @@ class LogicHandler(object):
 					initiator.update_generator(res, -1 * cost)
 				else:
 					initiator.update_resource(res, -1 * cost)
+
+	#trade has 3 kinds
+	# 1 Open Trade
+	# 2 1-1 Trade
+	# 3 1-n Trade
+	def ingredient_suffice_to_trade(self, player, resourcesOffer):
+		#make sure initiator has enough resources to offer
+		playerResources = player.get_resources()
+		playerGenerators = player.get_generators()
+		for res, count in resourcesOffer.items():
+			if res in list(FirstResource) + list(SecondResource) && count > playerResources[res] or \
+				res in list(FirstGenerator) + list(SecondGenerator) && count > playerGenerators[res]:
+				return False
+		return True
+
+	def accept_trade(self, initiator, resourcesOffer, resourcesRequest, acceptedPlayer):
+		#make sure accepted player has enough resources to accept
+		acceptedPlayerResources = acceptedPlayer.get_resources()
+		acceptedPlayerGenerators = acceptedPlayer.get_generators()
+		for res, count in resourcesRequest.items():
+			if res in list(FirstResource) + list(SecondResource) && count > acceptedPlayerResources[res] or \
+				res in list(FirstGenerator) + list(SecondGenerator) && count > acceptedPlayerGenerators[res]:
+				return False
+		#update initiator resources/generators
+		for res, count in resourcesOffer.items():
+			if res in list(FirstResource) + list(SecondResource):
+				initiator.update_resource(res, -count)
+			else:
+				initiator.update_generator(res, -count)
+		#update accepted player resources/generators
+		for res, count in resourcesRequest.items():
+			if res in list(FirstResource) + list(SecondResource):
+				acceptedPlayer.update_resource(res, -count)
+			else:
+				acceptedPlayer.update_generator(res, -count)
+		return True
+
+	def get_random_objective(self)
+		randomObjectiveCount = len(list(Objective))
+		randomIndex = int(math.floor(random.random() * randomObjectiveCount))
+		return randomIndex
+
+
+
+
