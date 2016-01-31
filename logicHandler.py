@@ -184,8 +184,6 @@ class LogicHandler(object):
 		for res, count in resourcesRequest.items():
 			if res in list(FirstResource) + list(SecondResource) and count > acceptedPlayerResources[res] or \
 				res in list(FirstGenerator) + list(SecondGenerator) and count > acceptedPlayerGenerators[res]:
-			if res in list(FirstResource) + list(SecondResource) && count > acceptedPlayerResources[res] or \
-				res in list(FirstGenerator) + list(SecondGenerator) && count > acceptedPlayerGenerators[res]:
 				LogicHandler.isAcceptingTrade = False
 				return False
 		#update initiator resources/generators
