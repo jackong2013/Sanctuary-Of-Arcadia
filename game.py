@@ -80,7 +80,7 @@ class Game(object):
 			print "trade with bank"
 			#options contains resourcesOffer
 			bankMultiplier = self.eventHandler.getBankMultiplier()
-			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest", bankMultiplier):
+			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
 				self.affectedPlayers.append(player)
 				return True
 			else:
