@@ -58,6 +58,9 @@ def login(username):
 		return "post success woohooo!: " + username
 	return "this is the login screen: " + username
 
+# {
+#     'name': 'ccs' (Player name)
+# }
 @socketio.on('join')
 def join(data):
     name = data['name']
@@ -80,6 +83,17 @@ def join(data):
         print all_players_details
         emit('startGame', player_names, room=room)
 
+# E.G.
+# {
+#     'from': 'kangsoon' (Player name)
+#     'action': 'Gather'
+# }
+# OR
+# {
+#     'from': 'ks',
+#     'action': 'Build',
+#     'target':'Woodmill'
+# }
 @socketio.on('move')
 def doAction(data):
     from_player = data['from']

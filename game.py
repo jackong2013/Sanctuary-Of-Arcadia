@@ -45,7 +45,7 @@ class Game(object):
 		elif action is Action.Build or action is Action.UpgradeResourceGenerator:
 			print "Build or upgrade resouce generator"
 			#options contains generatorName
-			if self.logicHandler.build(player, options["generatorName"]):
+			if self.logicHandler.build(player, options["generator"]):
 				self.affectedPlayers.append(player)
 				return True
 			else:
@@ -61,8 +61,8 @@ class Game(object):
 		elif action is Action.Destroy:
 			#options contains targetPlayerName , buildingName
 			print "destroy"
-			targetPlayer = self.getPlayerWithName(options["targetPlayerName"])
-			if self.logicHandler.destroy(player, targetPlayer, options["generatorName"]):
+			targetPlayer = self.getPlayerWithName(options["to"])
+			if self.logicHandler.destroy(player, targetPlayer, options["generator"]):
 				self.affectedPlayers.append(player)
 				self.affectedPlayers.append(targetPlayer)
 				return True
@@ -71,7 +71,7 @@ class Game(object):
 		elif action is Action.UpgradeResource:
 			print "upgrade resource"
 			#options contains resourceType
-			if self.logicHandler.upgrade_resource(player, options["resourceName"]):
+			if self.logicHandler.upgrade_resource(player, options["resource"]):
 				self.affectedPlayers.append(player)
 				return True
 			else: 
@@ -80,7 +80,7 @@ class Game(object):
 			print "trade with bank"
 			#options contains resourcesOffer
 			bankMultiplier = self.eventHandler.getBankMultiplier()
-			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
+			if self.logicHandler.trade_with_bank(player, options["want"], options["target"], bankMultiplier):
 				self.affectedPlayers.append(player)
 				return True
 			else:
@@ -107,7 +107,7 @@ class Game(object):
 				self.players.remove(player)
 				break;
 
-	def getPlayersSummaries(self):
+	def getAffectedPlayersSummaries(self):
 		playerSummary = {}
 		for player in self.affectedPlayers:
 			playerSummary = {}
