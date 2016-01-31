@@ -5,7 +5,9 @@ class Action(Enum):
 	Gather = 2
 	TradeRequest = 3
 	TradeAccept = 4
-	Destroy = 5
-	UpgradeResource = 6
-	UpgradeResourceGenerator = 7
-	TradeWithBank = 8
+	TradeDeny = 5
+	TradeWithBank = 6
+	Destroy = 7
+	UpgradeResource = 8
+	UpgradeResourceGenerator = 9
+	

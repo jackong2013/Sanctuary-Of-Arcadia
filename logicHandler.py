@@ -202,12 +202,20 @@ class LogicHandler(object):
 		playerGenerators = player.get_generators()
 		for res, count in resourcesOffer.items(): # res is string, dictionary in enum
 			targetResource = self.get_resource_with_name(res)
-			if targetResource in list(FirstResource) + list(SecondResource) and count > playerResources[targetResource] or \
-				targetResource in list(FirstGenerator) + list(SecondGenerator) and count > playerGenerators[targetResource]:
+			targetGenerator = self.get_generator_with_name(res)
+			if targetResource and targetResource in list(FirstResource) + list(SecondResource) and count > playerResources[targetResource] or \
+				targetGenerator and targetGenerator in list(FirstGenerator) + list(SecondGenerator) and count > playerGenerators[targetGenerator]:
 				return False
 		return True
 
-	def accept_trade(self, initiator, resourcesOffer, resourcesRequest, acceptedPlayer):
+	def accept_trade(self, acceptedPlayer, trade):
+		# initiator, resourcesOffer, resourcesRequest, acceptedPlayer
+		initiator = trade.get_initiator()
+		resourcesOffer = trade.get_resources_offer()
+		resourcesRequest = trade.get_resources_request()
+		if not resourcesOffer or not resourcesRequest:
+			return False
+
 		if LogicHandler.isAcceptingTrade: 
 			return False
 		LogicHandler.isAcceptingTrade = True
@@ -221,32 +229,47 @@ class LogicHandler(object):
 				LogicHandler.isAcceptingTrade = False
 				return False
 
-			#update accepted player resources/generators
+			#update resources/generators according to resource request by initiator
 			if targetResource in list(FirstResource) + list(SecondResource):
 				acceptedPlayer.update_resource(targetResource, -count)
+				initiator.update_resource(targetResource, count)
 			else:
 				acceptedPlayer.update_generator(targetResource, -count)
+				initiator.update_generator(targetResource, count)
 
 		#update initiator resources/generators
 		for res, count in resourcesOffer.items():
 			targetResource = self.get_resource_with_name(res)
 			if targetResource in list(FirstResource) + list(SecondResource):
 				initiator.update_resource(targetResource, -count)
+				acceptedPlayer.update_resource(targetResource, count)
 			else:
 				initiator.update_generator(targetResource, -count)
+				acceptedPlayer.update_generator(targetResource, count)
 		LogicHandler.isAcceptingTrade = False
 		return True
 
 	def trade_with_bank(self, player, resourcesOffer, resourcesRequest, bankMultiplier):
-		if ingredient_suffice_to_trade(player, resourcesOffer):
+		if self.ingredient_suffice_to_trade(player, resourcesOffer):
 			# check if offer match request in the bank multiplier condition
-			offerCount = 0
+			firstTierOfferCount = 0
+			secondTierOfferCount = 0
 			for res, count in resourcesOffer.items():
-				offerCount += count
-			requestCount = 0
+				targetResource = self.get_resource_with_name(res)
+				if targetResource in list(FirstResource):
+					firstTierOfferCount += count
+				else:
+					secondTierOfferCount += count
+			firstTierRequestCount = 0
+			secondTierReqestCount = 0
 			for res, count in resourcesRequest.items():
-				requestCount += count
-			if offerCount * bankMultiplier != requestCount:
+				targetResource = self.get_resource_with_name(res)
+				if targetResource in list(FirstResource):
+					firstTierRequestCount += count
+				else:
+					secondTierReqestCount += count
+
+			if firstTierOfferCount * bankMultiplier != firstTierRequestCount or secondTierOfferCount * bankMultiplier != secondTierReqestCount:
 				print "trade with bank count does not match"
 				return False
 			
@@ -259,7 +282,7 @@ class LogicHandler(object):
 			for res, count in resourcesRequest.items():
 				targetResource = self.get_resource_with_name(res)
 				player.update_resource(targetResource, count)
-				
+
 			return True
 		else:
 			return False
