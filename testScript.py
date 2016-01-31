@@ -21,6 +21,8 @@ resourcesRequest = {"Gold": 1}
 targetPlayerNames = ["saihou", "jack"]
 game.handleAction("ccs", Action.TradeRequest, {"resourcesOffer": resourcesOffer, "resourcesRequest": resourcesRequest, "targetPlayerNames": targetPlayerNames})
 game.handleAction("saihou", Action.TradeAccept, {"tradeId": game.currentTrade.get_id()})
+game.handleAction("saihou", Action.TradeAccept, {"tradeId": game.currentTrade.get_id()})
+# game.handleAction("saihou", Action.TradeAccept, {"tradeId": game.currentTrade.get_id()})
 printPlayerSummary()
 # print "TEST #1", game.handleAction("ccs", Action.Build, {"generatorName": "Woodmill"})
 # print "TEST #2", game.handleAction("ccs", Action.Gather, {}) # 14 12 13 

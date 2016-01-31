@@ -9,12 +9,16 @@ class Game(object):
 		self.logicHandler = LogicHandler()
 		self.eventHandler = EventHandler()
 		self.players = []
+		self.turns = 0
 
 		for playerName in playerNames:
 			objective = self.logicHandler.get_random_objective()
 			self.players.append(Player(playerName, objective))
 
 	def handleAction(self, playerName, action, options):
+		if self.getCurrentTurnPlayerName() != playerName:
+			return False
+
 		self.affectedPlayers = []
 		player = self.getPlayerWithName(playerName)
 		if player == None:
@@ -128,6 +132,7 @@ class Game(object):
 	def updateEventAndGetUpcomingEvents(self):
 		self.eventHandler.randomUpcomingEvent()
 		currentEvents = self.eventHandler.getUpcomingEvents()
+		self.turns += 1
 
 
 	def getPlayerWithName(self, name):
@@ -178,3 +183,12 @@ class Game(object):
 
 	def getTradeId(self):
 		return self.currentTrade.get_id()
+
+	def getIsTradeOver(self):
+		return self.currentTrade.get_is_trade_over()
+
+	def getTurns(self):
+		return self.turns
+
+	def getCurrentTurnPlayerName(self):
+		return self.players[self.getTurns() % len(self.players)].get_name()
