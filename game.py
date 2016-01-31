@@ -9,6 +9,7 @@ class Game(object):
 		# 	self.players = Player(playerId, Objective(objectiveIndex))
 		self.eventHandler = EventHandler()
 		# self.logicHandler = logicHandler()
+		self.players = []
 
 	def handleAction(self, playerId, action, options):
 		if action is Action.TradeRequest:
