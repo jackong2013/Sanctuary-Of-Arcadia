@@ -136,7 +136,7 @@ class LogicHandler(object):
 		else:
 			return False
 
-	def upgrade_generator(self, player, target):
+	def build(self, player, target):
 		if self.ingredient_suffice(player, target):
 			player.update_generator(target, 1)
 			for res, cost in LogicHandler.COST[target].items():
@@ -148,4 +148,12 @@ class LogicHandler(object):
 		else:
 			return False
 
-	# def build(self, player, target):
+	def destroy(self, initiator, victim, target):
+		#caculate cost for target
+		if self.ingredient_suffice(initiator, target):
+			victim.update_generator(target, -1)
+			for res, cost in LogicHandler.COST[target].items():
+				if res in list(FirstGenerator):
+					initiator.update_generator(res, -1 * cost)
+				else:
+					initiator.update_resource(res, -1 * cost)
