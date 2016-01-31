@@ -24,7 +24,7 @@ class Game(object):
 			print "trade offer"
 
 			#options contains targetPlayerNames, resourceOffer, resourceRequest
-			if logicHandler.ingredient_suffice_to_trade(player, options["resourcesOffer"]):
+			if self.logicHandler.ingredient_suffice_to_trade(player, options["resourcesOffer"]):
 				self.affectedPlayers.append(player)
 				for playerName in options["targetPlayerNames"]:
 					targetPlayer = self.getPlayerWithName(playerName)
@@ -35,7 +35,7 @@ class Game(object):
 		if action is Action.TradeAccept:
 			print "Trade accept"
 			#options contains tradeId
-			if logicHandler.accept_trade(player, options["resourcesOffer"], options["resourcesRequest"]):
+			if self.logicHandler.accept_trade(player, options["resourcesOffer"], options["resourcesRequest"]):
 				self.affectedPlayers.append(player) #player who accept the trade
 				acceptedPlayer = self.getPlayerWithName(options["targetPlayerName"])
 				self.affectedPlayers.append(acceptedPlayer)
@@ -45,7 +45,7 @@ class Game(object):
 		elif action is Action.Build or action is Action.UpgradeResourceGenerator:
 			print "Build or upgrade resouce generator"
 			#options contains generatorName
-			if logicHandler.build(player, options["generatorName"]):
+			if self.logicHandler.build(player, options["generatorName"]):
 				self.affectedPlayers.append(player)
 				return True
 			else:
@@ -53,27 +53,37 @@ class Game(object):
 		elif action is Action.Gather:
 			print "gather"
 			multipliers = self.eventHandler.getGeneratorMultipliers()
-			if logicHandler.gather(player, multipliers):
+			if self.logicHandler.gather(player, multipliers):
 				self.affectedPlayers.append(player)
 				return True
 			else:
 				return False
 		elif action is Action.Destroy:
+			#options contains targetPlayerName , buildingName
 			print "destroy"
 			targetPlayer = self.getPlayerWithName(options["targetPlayerName"])
-			if logicHandler.destroy(player, targetPlayer, options["generatorName"]):
+			if self.logicHandler.destroy(player, targetPlayer, options["generatorName"]):
 				self.affectedPlayers.append(player)
 				self.affectedPlayers.append(targetPlayer)
 				return True
 			else:
-				return False
-			#options contains targetPlayerNames with size of one, buildingType  
+				return False  
 		elif action is Action.UpgradeResource:
 			print "upgrade resource"
 			#options contains resourceType
-			if logicHandler.UpgradeResource(player, options["resourceName"]):
+			if self.logicHandler.upgrade_resource(player, options["resourceName"]):
+				self.affectedPlayers.append(player)
 				return True
 			else: 
+				return False
+		elif action is Action.TradeWithBank:
+			print "trade with bank"
+			#options contains resourcesOffer
+			bankMultiplier = self.eventHandler.getBankMultiplier()
+			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
+				self.affectedPlayers.append(player)
+				return True
+			else:
 				return False
 		else: 
 			print("error action")
@@ -81,7 +91,8 @@ class Game(object):
 
 	def updateEventAndGetUpcomingEvents(self):
 		self.eventHandler.randomUpcomingEvent()
-		let currentEvents = self.eventHandler.getCurrentEvents()
+		currentEvents = self.eventHandler.getUpcomingEvents()
+
 
 	def getPlayerWithName(self, name):
 		for player in self.players:
@@ -121,3 +132,10 @@ class Game(object):
 				playerSummary[gen.name] = count 
 			allPlayerSummaries[player.get_name()] = playerSummary
 		return allPlayerSummaries
+
+	def getGeneratorsAndBankMultipliers(self):
+		multipliers = {}
+		for key, mutliplier in self.eventHandler.getGeneratorMultipliers.items():
+			mutliplier[key.name] = multipliers
+		multipliers["bank"] = self.eventHandler.getBankMultiplier()
+		return multipliers

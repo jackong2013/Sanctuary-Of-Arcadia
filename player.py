@@ -7,12 +7,12 @@ class Player(object):
 		self.objective = objective
 		self.inventoryFlag = False
 		self.resources = {
-			FirstResource.Wood: 10,
-			FirstResource.Iron: 10,
-			FirstResource.Gold: 10,
-			SecondResource.Lumber: 2,
-			SecondResource.Mithril: 2,
-			SecondResource.Treasure: 2
+			FirstResource.Wood: 2,
+			FirstResource.Iron: 2,
+			FirstResource.Gold: 2,
+			SecondResource.Lumber: 0,
+			SecondResource.Mithril: 0,
+			SecondResource.Treasure: 0
 		}
 		self.generators = {
 			FirstGenerator.Woodmill: 1,

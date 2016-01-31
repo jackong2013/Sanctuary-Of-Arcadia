@@ -8,3 +8,4 @@ class Action(Enum):
 	Destroy = 5
 	UpgradeResource = 6
 	UpgradeResourceGenerator = 7
+	TradeWithBank = 8

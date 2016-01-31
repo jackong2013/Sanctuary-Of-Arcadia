@@ -66,9 +66,10 @@ class EventHandler(object):
 		randomIndex = int(math.floor(random.random() * EventHandler.NUMBER_OF_EVENTS))
 
 		countDownRounds = int(math.ceil(random.random() * EventHandler.MAX_COUNT_DOWN_ROUNDS_FOR_EVENT))
-		print "count down rounds " + str(countDownRounds)
 		self.happenInRounds[randomIndex] = countDownRounds
-		print self.happenInRounds
+		for i in range(0, len(self.happenInRounds)):
+			if self.happenInRounds[i] >= 0:
+				print Event(i).name + " " + str(self.happenInRounds[i])
 
 	def getUpcomingEvents(self):
 		upcomingEvents = {}
@@ -143,6 +144,8 @@ class EventHandler(object):
 					print "bank rupt happens too"
 					continue
 				self.setBankMultiplier(EventHandler.DWARVES_DAY_MULTIPLIER)
+			elif event is Event.SharingIsCaring:
+				print "sharing is caring doesnt change multiplier"
 			else:
 				print "error event"
 		print str(self.woodmillMultiplier) + " " \
