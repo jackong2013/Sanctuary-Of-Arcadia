@@ -10,6 +10,7 @@ class Game(object):
 		self.eventHandler = EventHandler()
 		self.players = []
 		self.turns = 0
+		self.jsonResponse = {}
 
 		for playerName in playerNames:
 			objective = self.logicHandler.get_random_objective()
@@ -23,6 +24,8 @@ class Game(object):
 		player = self.getPlayerWithName(playerName)
 		if player == None:
 			return False
+
+		self.jsonResponse = None
 
 		if action is Action.TradeRequest:
 			print "trade offer"
@@ -45,6 +48,7 @@ class Game(object):
 				for playerName in targetPlayerNames:
 					targetPlayer = self.getPlayerWithName(playerName)
 					self.affectedPlayers.append(targetPlayer)
+				makeTradeTemplateJson(self.currentTrade)
 				return True
 			else:
 				return False
@@ -58,6 +62,7 @@ class Game(object):
 				self.currentTrade.set_player_responded(player.get_name())
 				self.affectedPlayers.append(player) #player who accept the trade
 				self.affectedPlayers.append(self.currentTrade.get_initiator())
+				self.makeUpdateTemplateJson()
 				return True
 			else:
 				return False
@@ -76,6 +81,7 @@ class Game(object):
 			bankMultiplier = self.eventHandler.getBankMultiplier()
 			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
 				self.affectedPlayers.append(player)
+				self.makeUpdateTemplateJson()
 				return True
 			else:
 				return False
@@ -84,6 +90,7 @@ class Game(object):
 			#options contains generatorName
 			if self.logicHandler.build(player, options["generator"]):
 				self.affectedPlayers.append(player)
+				self.makeUpdateTemplateJson()
 				return True
 			else:
 				return False
@@ -92,6 +99,7 @@ class Game(object):
 			multipliers = self.eventHandler.getGeneratorMultipliers()
 			if self.logicHandler.gather(player, multipliers):
 				self.affectedPlayers.append(player)
+				self.makeUpdateTemplateJson()
 				return True
 			else:
 				return False
@@ -102,6 +110,7 @@ class Game(object):
 			if self.logicHandler.destroy(player, targetPlayer, options["generator"]):
 				self.affectedPlayers.append(player)
 				self.affectedPlayers.append(targetPlayer)
+				self.makeUpdateTemplateJson()
 				return True
 			else:
 				return False  
@@ -110,6 +119,7 @@ class Game(object):
 			#options contains resourceType
 			if self.logicHandler.upgrade_resource(player, options["resource"]):
 				self.affectedPlayers.append(player)
+				self.makeUpdateTemplateJson()
 				return True
 			else: 
 				return False
@@ -132,7 +142,6 @@ class Game(object):
 	def updateEventAndGetUpcomingEvents(self):
 		self.eventHandler.randomUpcomingEvent()
 		currentEvents = self.eventHandler.getUpcomingEvents()
-		self.turns += 1
 
 
 	def getPlayerWithName(self, name):
@@ -190,5 +199,28 @@ class Game(object):
 	def getTurns(self):
 		return self.turns
 
+	def increaseTurns(self):
+		self.turns += 1
+
 	def getCurrentTurnPlayerName(self):
 		return self.players[self.getTurns() % len(self.players)].get_name()
+
+	def makeUpdateTemplateJson(self):
+		json = {}
+		json['action'] = "Update"
+		json['update_res'] = self.getAffectedPlayersSummaries() 
+		self.jsonResponse = json
+
+	def makeTradeTemplateJson(self, trade):
+		json = {}
+		json['action'] = "TradeRequest"
+		json['from'] = trade.get_initiator()
+		json['to'] = trade.get_target_players_name()
+		json['want'] = trade.get_resources_request()
+		json['offer'] = trade.get_resources_offer()
+		json['tid'] = trade.get_id()
+		self.jsonResponse = json
+
+	def getJsonResponse(self):
+		return self.jsonResponse
+

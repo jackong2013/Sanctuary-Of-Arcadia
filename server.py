@@ -51,6 +51,7 @@ game = None
 room = "hardcode me"
 player_names = []
 required_player_count = 2
+actions_per_turn = 2
 
 @app.route('/<username>', methods=['GET', 'POST'])
 def login(username):
@@ -106,10 +107,15 @@ def doAction(data):
             break;
 
     if (isinstance(action, Action)):
-        game.handleAction(from_player, action, data)
+        if game.handleAction(from_player, action, data) is True:
+            game.increaseTurns()
+            if (game.getTurns() % (actions_per_turn * len(player_names))) is 0:
+                game.updateEventAndGetUpcomingEvents()
 
-        updated_data = []
-        emit('playersBroadcast', updated_data, room=room)
+            jsonResponse = game.getJsonResponse()
+            emit('playersBroadcast', updated_data, room=room)
+        else: 
+            print "Do action failed due to invalid parameters."
     else:
         print 'Error, invalid action'
 
