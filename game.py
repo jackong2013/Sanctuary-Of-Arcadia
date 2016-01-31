@@ -78,7 +78,7 @@ class Game(object):
 				return False
 		elif action is Action.TradeWithBank:
 			print "trade with bank"
-			#options contains resourcesOffer
+			#options contains resourcesOffer, resourcesRequest
 			bankMultiplier = self.eventHandler.getBankMultiplier()
 			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
 				self.affectedPlayers.append(player)

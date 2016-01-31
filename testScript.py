@@ -33,7 +33,7 @@ game.updateEventAndGetUpcomingEvents()
 game.updateEventAndGetUpcomingEvents()
 game.updateEventAndGetUpcomingEvents()
 game.updateEventAndGetUpcomingEvents()
-print "Test #8", game.handleAction("ccs", Action.TradeWithBank, {"generatorName": "GoldMine", "targetPlayerName": "jack"}) 
+print "Test #8", game.handleAction("ccs", Action.TradeWithBank, {"resourcesOffer": {}, "resourcesRequest": {}}}) 
 
 
 # event = EventHandler()

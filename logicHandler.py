@@ -240,13 +240,24 @@ class LogicHandler(object):
 	def trade_with_bank(self, player, resourcesOffer, resourcesRequest, bankMultiplier):
 		if ingredient_suffice_to_trade(player, resourcesOffer):
 			# check if offer match request in the bank multiplier condition
-			offerCount = 0
+			firstTierOfferCount = 0
+			secondTierOfferCount = 0
 			for res, count in resourcesOffer.items():
-				offerCount += count
-			requestCount = 0
+				targetResource = self.get_resource_with_name(res)
+				if targetResource in list(FirstResource):
+					firstTierOfferCount += count
+				else:
+					secondTierOfferCount += count
+			firstTierRequestCount = 0
+			secondTierReqestCount = 0
 			for res, count in resourcesRequest.items():
-				requestCount += count
-			if offerCount * bankMultiplier != requestCount:
+				targetResource = self.get_resource_with_name(res)
+				if targetResource in list(FirstResource):
+					firstTierRequestCount += count
+				else:
+					secondTierReqestCount += count
+
+			if firstTierOfferCount * bankMultiplier != firstTierRequestCount or secondTierOfferCount * bankMultiplier != secondTierReqestCount:
 				print "trade with bank count does not match"
 				return False
 			
@@ -259,7 +270,7 @@ class LogicHandler(object):
 			for res, count in resourcesRequest.items():
 				targetResource = self.get_resource_with_name(res)
 				player.update_resource(targetResource, count)
-				
+
 			return True
 		else:
 			return False
