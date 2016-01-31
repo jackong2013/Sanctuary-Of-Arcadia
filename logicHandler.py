@@ -1,6 +1,7 @@
 from items import FirstResource, SecondResource, FirstGenerator, SecondGenerator
 from objective import Objective
 import random
+import math
 
 class LogicHandler(object):
 	INVENTORY_CAP = 10

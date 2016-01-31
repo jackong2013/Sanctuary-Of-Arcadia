@@ -75,20 +75,23 @@ def join(data):
     if len(player_names) == 4:
         global game
         game = Game(player_names)
+        all_players_details = game.getAllPlayersSummaries()
+        print all_players_details
         emit('startGame', player_names, room=room)
 
 @socketio.on('move')
 def doAction(data):
-    player_action = data['action']
+    from_player = data['from']
+    raw_player_action = data['action']
     action = None
 
     for stuff in Action:
-        if (stuff.name == player_action):
+        if (stuff.name == raw_player_action):
             action = stuff
             break;
 
     if (isinstance(action, Action)):
-        game.handleAction(action, data)
+        game.handleAction(from_player, action, data)
     else:
         print 'Error, invalid action'
 

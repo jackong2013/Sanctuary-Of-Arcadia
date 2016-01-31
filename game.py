@@ -1,14 +1,18 @@
 from action import Action
 from eventHandler import EventHandler
+from logicHandler import LogicHandler
 from player import Player
 
 class Game(object):
+
 	def __init__(self, playerNames):
-		for playerName in playerNames:
-			objective = logicHandler.get_random_objective()
-			self.players = Player(playerName, objective)
+		self.logicHandler = LogicHandler()
 		self.eventHandler = EventHandler()
-		self.logicHandler = logicHandler()
+		self.players = []
+
+		for playerName in playerNames:
+			objective = self.logicHandler.get_random_objective()
+			self.players.append(Player(playerName, objective))
 
 	def handleAction(self, playerName, action, options):
 		self.affectedPlayers = []
@@ -19,7 +23,7 @@ class Game(object):
 		if action is Action.TradeRequest:
 			print "trade offer"
 			#options contains targetPlayerIds, resourceOffer, resourceRequest
-			if logicHandler.ingredient_suffice_to_trade(player, options["resourcesOffer"]):
+			if self.logicHandler.ingredient_suffice_to_trade(player, options["resourcesOffer"]):
 				self.affectedPlayers = [playerName, options["targetPlayerNames"]]
 				return True
 		if action is Action.TradeAccept:
@@ -56,16 +60,27 @@ class Game(object):
 				break;
 
 	def getPlayersSummaries(self):
-		playerSummaries = []
+		playerSummary = {}
 		for player in self.affectedPlayers:
 			playerSummary = {}
 			resources = player.get_resources()
-			for res, count in resources.items()
+			for res, count in resources.items():
 				playerSummary[res.name] = count
-			for generator, count in generator.items()
+			generator = player.get_generators()
+			for generator, count in generator.items():
 				playerSummary[generator.name] = count 
-			playerSummaries.append(playerSummary)
-		return playerSummaries
+			playerSummary[player.get_name()] = playerSummary
+		return playerSummary
 
-
-
+	def getAllPlayersSummaries(self):
+		allPlayerSummaries = {}
+		for player in self.players:
+			playerSummary = {}
+			resources = player.get_resources()
+			for res, count in resources.items():
+				playerSummary[res.name] = count
+			generator = player.get_generators()
+			for generator, count in generator.items():
+				playerSummary[generator.name] = count 
+			allPlayerSummaries[player.get_name()] = playerSummary
+		return allPlayerSummaries
