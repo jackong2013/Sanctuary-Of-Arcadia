@@ -18,11 +18,13 @@ class Game(object):
 
 	def handleAction(self, playerName, action, options):
 		if self.getCurrentTurnPlayerName() != playerName:
+			print "Not your turn! Player's " + str(self.getTurns()/2) + " turn."
 			return False
 
 		self.affectedPlayers = []
 		player = self.getPlayerWithName(playerName)
 		if player == None:
+			print "Cannot find player!"
 			return False
 
 		self.jsonResponse = None
@@ -88,7 +90,7 @@ class Game(object):
 		elif action is Action.Build or action is Action.UpgradeResourceGenerator:
 			print "Build or upgrade resouce generator"
 			#options contains generatorName
-			if self.logicHandler.build(player, options["generator"]):
+			if self.logicHandler.build(player, options["target"]):
 				self.affectedPlayers.append(player)
 				self.makeUpdateTemplateJson()
 				return True
@@ -117,7 +119,7 @@ class Game(object):
 		elif action is Action.UpgradeResource:
 			print "upgrade resource"
 			#options contains resourceType
-			if self.logicHandler.upgrade_resource(player, options["resource"]):
+			if self.logicHandler.upgrade_resource(player, options["target"]):
 				self.affectedPlayers.append(player)
 				self.makeUpdateTemplateJson()
 				return True
@@ -158,7 +160,7 @@ class Game(object):
 				break;
 
 	def getAffectedPlayersSummaries(self):
-		playerSummary = {}
+		affectedPlayerSummaries = {}
 		for player in self.affectedPlayers:
 			playerSummary = {}
 			resources = player.get_resources()
@@ -167,8 +169,8 @@ class Game(object):
 			generator = player.get_generators()
 			for gen, count in generator.items():
 				playerSummary[gen.name] = count 
-			playerSummary[player.get_name()] = playerSummary
-		return playerSummary
+			affectedPlayerSummaries[player.get_name()] = playerSummary
+		return affectedPlayerSummaries
 
 	def getAllPlayersSummaries(self):
 		allPlayerSummaries = {}
@@ -202,8 +204,11 @@ class Game(object):
 	def increaseTurns(self):
 		self.turns += 1
 
+	def setTurns(self, turns):
+		self.turns = turns
+
 	def getCurrentTurnPlayerName(self):
-		return self.players[self.getTurns() % len(self.players)].get_name()
+		return self.players[(self.getTurns()/2)].get_name()
 
 	def makeUpdateTemplateJson(self):
 		json = {}

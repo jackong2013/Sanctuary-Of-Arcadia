@@ -82,7 +82,7 @@ def join(data):
         game = Game(player_names)
         all_players_details = game.getAllPlayersSummaries()
         print all_players_details
-        emit('startGame', player_names, room=room)
+        emit('startGame', all_players_details, room=room)
 
 # E.G.
 # {
@@ -101,6 +101,8 @@ def doAction(data):
     raw_player_action = data['action']
     action = None
 
+    print data
+
     for stuff in Action:
         if (stuff.name == raw_player_action):
             action = stuff
@@ -108,12 +110,18 @@ def doAction(data):
 
     if (isinstance(action, Action)):
         if game.handleAction(from_player, action, data) is True:
+            print "action success!"
             game.increaseTurns()
-            if (game.getTurns() % (actions_per_turn * len(player_names))) is 0:
+            if (game.getTurns() / (2*len(player_names))) is 1:
+                game.setTurns(0)
                 game.updateEventAndGetUpcomingEvents()
+                print 'update events'
 
             jsonResponse = game.getJsonResponse()
-            emit('playersBroadcast', updated_data, room=room)
+            if jsonResponse is not None:
+                print jsonResponse
+                emit('playersBroadcast', jsonResponse, room=room)
+
         else: 
             print "Do action failed due to invalid parameters."
     else:
@@ -136,6 +144,7 @@ def handleTradeOfferResp(data):
 @socketio.on('leave')
 def leave(data):
     name = data['name']
+    global game
     if game is not None:
         game.playerLeft(name)
     
