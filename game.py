@@ -76,6 +76,15 @@ class Game(object):
 				return True
 			else: 
 				return False
+		elif action is Action.TradeWithBank:
+			print "trade with bank"
+			#options contains resourcesOffer
+			bankMultiplier = self.eventHandler.getBankMultiplier()
+			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest", bankMultiplier):
+				self.affectedPlayers.append(player)
+				return True
+			else:
+				return False
 		else: 
 			print("error action")
 			return False
@@ -83,7 +92,7 @@ class Game(object):
 	def updateEventAndGetUpcomingEvents(self):
 		self.eventHandler.randomUpcomingEvent()
 		currentEvents = self.eventHandler.getUpcomingEvents()
-		
+
 
 	def getPlayerWithName(self, name):
 		for player in self.players:

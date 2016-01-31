@@ -191,10 +191,11 @@ class LogicHandler(object):
 		print "generator enum with name " + name + " not found"
 		return None
 
-	#trade has 3 kinds
+	#trade has 4 kinds
 	# 1 Open Trade
 	# 2 1-1 Trade
 	# 3 1-n Trade
+	# 4 Trade With Bank
 	def ingredient_suffice_to_trade(self, player, resourcesOffer):
 		#make sure initiator has enough resources to offer
 		playerResources = player.get_resources()
@@ -235,6 +236,33 @@ class LogicHandler(object):
 				initiator.update_generator(targetResource, -count)
 		LogicHandler.isAcceptingTrade = False
 		return True
+
+	def trade_with_bank(self, player, resourcesOffer, resourcesRequest, bankMultiplier):
+		if ingredient_suffice_to_trade(player, resourcesOffer):
+			# check if offer match request in the bank multiplier condition
+			offerCount = 0
+			for res, count in resourcesOffer.items():
+				offerCount += count
+			requestCount = 0
+			for res, count in resourcesRequest.items():
+				requestCount += count
+			if offerCount * bankMultiplier != requestCount:
+				print "trade with bank count does not match"
+				return False
+			
+			# remove the ingredient from the user
+			for res, count in resourcesOffer.items():
+				targetResource = self.get_resource_with_name(res)
+				player.update_resource(targetResource, -count)
+
+			# upgrade the ingredient that got from the bank
+			for res, count in resourcesRequest.items():
+				targetResource = self.get_resource_with_name(res)
+				player.update_resource(targetResource, count)
+				
+			return True
+		else:
+			return False
 
 	def get_random_objective(self):
 		randomObjectiveCount = len(list(Objective))
