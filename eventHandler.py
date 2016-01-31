@@ -70,14 +70,17 @@ class EventHandler(object):
 		self.happenInRounds[randomIndex] = countDownRounds
 		print self.happenInRounds
 
-	def getCurrentEvents(self):
+	def getUpcomingEvents(self):
+		upcomingEvents = {}
 		currentEvents = []
 		for i in range(0, EventHandler.NUMBER_OF_EVENTS):
-			if self.happenInRounds[i] == 0:
-				currentEvents.append(Event(i))
+			if self.happenInRounds[i] != -1:
+				upcomingEvents[Event(i)] = self.happenInRounds[i]
+				if self.happenInRounds[i] == 0:
+					currentEvents.append(Event(i))
 		
 		self.changeMultiplierAccordingToEvent(currentEvents)
-		return currentEvents
+		return upcomingEvents
 
 	def changeMultiplierAccordingToEvent(self, events):
 		self.resetMultiplier()

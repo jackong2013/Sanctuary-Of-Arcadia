@@ -89,6 +89,7 @@ class LogicHandler(object):
 			SecondResource.Mithril: 3
 		}
 	}
+	isAcceptingTrade = False
 		
 	def __init__(self):
 		self.nothing = None
@@ -119,7 +120,7 @@ class LogicHandler(object):
 					return can_build
 		return can_build
 
-	def collect(self, player, multipliers):
+	def gather(self, player, multipliers):
 		generators = player.get_generators()
 		for generator, qty in generators.items():
 			resource = LogicHandler.GENERATOR_CAPACITY[generator]['resource']
@@ -175,11 +176,15 @@ class LogicHandler(object):
 
 	def accept_trade(self, initiator, resourcesOffer, resourcesRequest, acceptedPlayer):
 		#make sure accepted player has enough resources to accept
+		if LogicHandler.isAcceptingTrade: 
+			return False
+		LogicHandler.isAcceptingTrade = True
 		acceptedPlayerResources = acceptedPlayer.get_resources()
 		acceptedPlayerGenerators = acceptedPlayer.get_generators()
 		for res, count in resourcesRequest.items():
 			if res in list(FirstResource) + list(SecondResource) && count > acceptedPlayerResources[res] or \
 				res in list(FirstGenerator) + list(SecondGenerator) && count > acceptedPlayerGenerators[res]:
+				LogicHandler.isAcceptingTrade = False
 				return False
 		#update initiator resources/generators
 		for res, count in resourcesOffer.items():
@@ -193,6 +198,7 @@ class LogicHandler(object):
 				acceptedPlayer.update_resource(res, -count)
 			else:
 				acceptedPlayer.update_generator(res, -count)
+		LogicHandler.isAcceptingTrade = False
 		return True
 
 	def get_random_objective(self)
