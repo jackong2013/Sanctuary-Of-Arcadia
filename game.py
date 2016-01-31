@@ -33,8 +33,8 @@ class Game(object):
 			print "trade offer"
 			#options contains targetPlayerNames, resourceOffer, resourceRequest
 			targetPlayerNames = options["targetPlayerNames"]
-			resourcesOffer = options["resourcesOffer"]
-			resourcesRequest = options["resourcesRequest"]
+			resourcesOffer = options["offer"]
+			resourcesRequest = options["want"]
 
 			if not targetPlayerNames or not resourcesOffer or not resourcesRequest:
 				return False
@@ -81,7 +81,7 @@ class Game(object):
 			print "trade with bank"
 			#options contains resourcesOffer, resourcesRequest
 			bankMultiplier = self.eventHandler.getBankMultiplier()
-			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
+			if self.logicHandler.trade_with_bank(player, options["offer"], options["want"], bankMultiplier):
 				self.affectedPlayers.append(player)
 				self.makeUpdateTemplateJson()
 				return True
@@ -109,7 +109,7 @@ class Game(object):
 			#options contains targetPlayerName , buildingName
 			print "destroy"
 			targetPlayer = self.getPlayerWithName(options["to"])
-			if self.logicHandler.destroy(player, targetPlayer, options["generator"]):
+			if self.logicHandler.destroy(player, targetPlayer, options["target"]):
 				self.affectedPlayers.append(player)
 				self.affectedPlayers.append(targetPlayer)
 				self.makeUpdateTemplateJson()

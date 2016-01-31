@@ -50,7 +50,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 game = None
 room = "hardcode me"
 player_names = []
-required_player_count = 2
+required_player_count = 4
 actions_per_turn = 2
 
 @app.route('/<username>', methods=['GET', 'POST'])
@@ -127,10 +127,9 @@ def doAction(data):
     else:
         print 'Error, invalid action'
 
-# {
-#     'from': 'saihou' (Player name)
-#     'resp': 'Accept' or 'Reject'
-# }
+# NOTE: do not use this anymore. 
+# Use 'move' with action:"TradeAccept" or "TradeDeny" 
+# and from: <playername> and tradeId: <tradeId>
 @socketio.on('tradeOfferResp')
 def handleTradeOfferResp(data):
     if (data['resp'] == "Accept"):
