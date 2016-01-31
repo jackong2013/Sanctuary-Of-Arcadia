@@ -39,15 +39,19 @@ from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 import json
+from random import sample
 
 from game import *
 from player import Player
+from objective import Objective
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 game = Game([])
 room = "hardcode me"
+objectives = sample(xrange(4), 4)
+playercount = 0
 
 @app.route('/<username>', methods=['GET', 'POST'])
 def login(username):
@@ -63,7 +67,11 @@ def join(data):
             emit('joinFailed', "Error: A player already has the same name!")
             return
 
-    new_player = Player(data['name'], 'OBJOBJOBJ')
+    global playercount
+    print type(objectives)
+    print objectives
+    new_player = Player(data['name'], Objective(objectives[playercount]))
+    playercount += 1
     game.players.append(new_player)
     print new_player.get_name() + ' has joined!'
 
@@ -73,6 +81,8 @@ def join(data):
 
     join_room(room)
     emit('joinSuccessful', current_players_name, room=room)
+    if playercount == 4:
+        emit('startGame', current_players_name, room=room)
 
 @socketio.on('move')
 def doAction(data):
