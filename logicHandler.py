@@ -168,8 +168,8 @@ class LogicHandler(object):
 		playerResources = player.get_resources()
 		playerGenerators = player.get_generators()
 		for res, count in resourcesOffer.items():
-			if res in list(FirstResource) + list(SecondResource) && count > playerResources[res] or \
-				res in list(FirstGenerator) + list(SecondGenerator) && count > playerGenerators[res]:
+			if res in list(FirstResource) + list(SecondResource) and count > playerResources[res] or \
+				res in list(FirstGenerator) + list(SecondGenerator) and count > playerGenerators[res]:
 				return False
 		return True
 
@@ -178,8 +178,8 @@ class LogicHandler(object):
 		acceptedPlayerResources = acceptedPlayer.get_resources()
 		acceptedPlayerGenerators = acceptedPlayer.get_generators()
 		for res, count in resourcesRequest.items():
-			if res in list(FirstResource) + list(SecondResource) && count > acceptedPlayerResources[res] or \
-				res in list(FirstGenerator) + list(SecondGenerator) && count > acceptedPlayerGenerators[res]:
+			if res in list(FirstResource) + list(SecondResource) and count > acceptedPlayerResources[res] or \
+				res in list(FirstGenerator) + list(SecondGenerator) and count > acceptedPlayerGenerators[res]:
 				return False
 		#update initiator resources/generators
 		for res, count in resourcesOffer.items():
@@ -195,7 +195,7 @@ class LogicHandler(object):
 				acceptedPlayer.update_generator(res, -count)
 		return True
 
-	def get_random_objective(self)
+	def get_random_objective(self):
 		randomObjectiveCount = len(list(Objective))
 		randomIndex = int(math.floor(random.random() * randomObjectiveCount))
 		return randomIndex
