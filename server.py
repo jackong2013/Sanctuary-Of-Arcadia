@@ -50,6 +50,7 @@ socketio = SocketIO(app, async_mode=async_mode)
 game = None
 room = "hardcode me"
 player_names = []
+required_player_count = 2
 
 @app.route('/<username>', methods=['GET', 'POST'])
 def login(username):
@@ -72,7 +73,7 @@ def join(data):
 
     join_room(room)
     emit('joinSuccessful', player_names, room=room)
-    if len(player_names) == 4:
+    if len(player_names) == required_player_count:
         global game
         game = Game(player_names)
         all_players_details = game.getAllPlayersSummaries()
@@ -92,9 +93,26 @@ def doAction(data):
 
     if (isinstance(action, Action)):
         game.handleAction(from_player, action, data)
+
+        updated_data = []
+        emit('playersBroadcast', updated_data, room=room)
     else:
         print 'Error, invalid action'
 
+# {
+#     'from': 'saihou' (Player name)
+#     'resp': 'Accept' or 'Reject'
+# }
+@socketio.on('tradeOfferResp')
+def handleTradeOfferResp(data):
+    if (data['resp'] == "Accept"):
+        print data['from'] + " has accepted trade offer."
+    else:
+        print "Rejected trade offer"
+
+# {
+#     'name': 'neko' (Player name)
+# }
 @socketio.on('leave')
 def leave(data):
     name = data['name']
