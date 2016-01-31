@@ -132,3 +132,10 @@ class Game(object):
 				playerSummary[generator.name] = count 
 			allPlayerSummaries[player.get_name()] = playerSummary
 		return allPlayerSummaries
+
+	def getGeneratorsAndBankMultipliers(self):
+		multipliers = {}
+		for key, mutliplier in self.eventHandler.getGeneratorMultipliers.items():
+			mutliplier[key.name] = multipliers
+		multipliers["bank"] = self.eventHandler.getBankMultiplier()
+		return multipliers

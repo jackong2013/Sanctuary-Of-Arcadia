@@ -27,11 +27,14 @@ print "TEST #5", game.handleAction("ccs", Action.UpgradeResourceGenerator, {"gen
 printPlayerSummary()
 print "Test #6", game.handleAction("ccs", Action.Destroy, {"generatorName": "GoldMine", "targetPlayerName": "jack"}) 
 printPlayerSummary()
+print "Test #7 update event and upcoming event"
 game.updateEventAndGetUpcomingEvents()
 game.updateEventAndGetUpcomingEvents()
 game.updateEventAndGetUpcomingEvents()
 game.updateEventAndGetUpcomingEvents()
 game.updateEventAndGetUpcomingEvents()
+print "Test #8", game.handleAction("ccs", Action.TradeWithBank, {"generatorName": "GoldMine", "targetPlayerName": "jack"}) 
+
 
 # event = EventHandler()
 # logic = LogicHandler()
