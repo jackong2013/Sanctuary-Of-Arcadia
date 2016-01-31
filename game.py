@@ -2,9 +2,9 @@ from action import Action
 from eventHandler import EventHandler
 from logicHandler import LogicHandler
 from player import Player
+from trade import Trade
 
 class Game(object):
-
 	def __init__(self, playerNames):
 		self.logicHandler = LogicHandler()
 		self.eventHandler = EventHandler()
@@ -22,11 +22,23 @@ class Game(object):
 
 		if action is Action.TradeRequest:
 			print "trade offer"
-
 			#options contains targetPlayerNames, resourceOffer, resourceRequest
-			if self.logicHandler.ingredient_suffice_to_trade(player, options["resourcesOffer"]):
+			targetPlayerNames = options["targetPlayerNames"]
+			resourcesOffer = options["resourcesOffer"]
+			resourcesRequest = options["resourcesRequest"]
+
+			if not targetPlayerNames or not resourcesOffer or not resourcesRequest:
+				return False
+
+			targetPlayers = []
+			for name in targetPlayerNames:
+				targetPlayer = self.getPlayerWithName(name)
+				targetPlayers.append(targetPlayer)
+
+			if self.logicHandler.ingredient_suffice_to_trade(player, resourcesOffer):
+				self.currentTrade = Trade(player, resourcesOffer, resourcesRequest, targetPlayers)
 				self.affectedPlayers.append(player)
-				for playerName in options["targetPlayerNames"]:
+				for playerName in targetPlayerNames:
 					targetPlayer = self.getPlayerWithName(playerName)
 					self.affectedPlayers.append(targetPlayer)
 				return True
@@ -35,10 +47,31 @@ class Game(object):
 		if action is Action.TradeAccept:
 			print "Trade accept"
 			#options contains tradeId
-			if self.logicHandler.accept_trade(player, options["resourcesOffer"], options["resourcesRequest"]):
+			tradeId = options["tradeId"]
+			if not self.isTradeValidWithIdAndName(tradeId, player.get_name()):
+				return False 
+			if self.logicHandler.accept_trade(player, self.currentTrade):
+				self.currentTrade.set_player_responded(player.get_name())
 				self.affectedPlayers.append(player) #player who accept the trade
-				acceptedPlayer = self.getPlayerWithName(options["targetPlayerName"])
-				self.affectedPlayers.append(acceptedPlayer)
+				self.affectedPlayers.append(self.currentTrade.get_initiator())
+				return True
+			else:
+				return False
+		elif action is Action.TradeDeny:
+			print "trade deny"
+			#options contains tradeId
+			tradeId = options["tradeId"]
+			if not self.isTradeValidWithIdAndName(tradeId, player.get_name()):
+				return False 
+
+			self.currentTrade.set_player_responded(player.get_name())
+			return True
+		elif action is Action.TradeWithBank:
+			print "trade with bank"
+			#options contains resourcesOffer, resourcesRequest
+			bankMultiplier = self.eventHandler.getBankMultiplier()
+			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
+				self.affectedPlayers.append(player)
 				return True
 			else:
 				return False
@@ -76,18 +109,21 @@ class Game(object):
 				return True
 			else: 
 				return False
-		elif action is Action.TradeWithBank:
-			print "trade with bank"
-			#options contains resourcesOffer, resourcesRequest
-			bankMultiplier = self.eventHandler.getBankMultiplier()
-			if self.logicHandler.trade_with_bank(player, options["resourcesOffer"], options["resourcesRequest"], bankMultiplier):
-				self.affectedPlayers.append(player)
-				return True
-			else:
-				return False
 		else: 
 			print("error action")
 			return False
+
+	def isTradeValidWithIdAndName(self, tradeId, playerName):
+		if not tradeId or tradeId != self.currentTrade.get_id() or \
+			playerName not in self.currentTrade.get_target_players_name():
+			return False
+
+		if self.currentTrade.get_is_trade_over():
+			print("trade is over")
+			return False
+
+		return True
+
 
 	def updateEventAndGetUpcomingEvents(self):
 		self.eventHandler.randomUpcomingEvent()
@@ -139,3 +175,6 @@ class Game(object):
 			mutliplier[key.name] = multipliers
 		multipliers["bank"] = self.eventHandler.getBankMultiplier()
 		return multipliers
+
+	def getTradeId(self):
+		return self.currentTrade.get_id()

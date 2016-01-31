@@ -16,24 +16,33 @@ def printPlayerSummary():
 		print "\n"
 
 game = Game(["ccs", "saihou", "jack"]) 
-print "TEST #1", game.handleAction("ccs", Action.Build, {"generatorName": "Woodmill"})
-print "TEST #2", game.handleAction("ccs", Action.Gather, {}) # 14 12 13 
+resourcesOffer = {"Wood": 2}
+resourcesRequest = {"Gold": 1}
+targetPlayerNames = ["saihou", "jack"]
+game.handleAction("ccs", Action.TradeRequest, {"resourcesOffer": resourcesOffer, "resourcesRequest": resourcesRequest, "targetPlayerNames": targetPlayerNames})
+game.handleAction("saihou", Action.TradeAccept, {"tradeId": game.currentTrade.get_id()})
 printPlayerSummary()
-print "TEST #3", game.handleAction("ccs", Action.Build, {"generatorName": "Woodmill"}) 
-printPlayerSummary()
-print "TEST #4", game.handleAction("ccs", Action.UpgradeResource, {"resourceName": "Lumber"}) 
-printPlayerSummary()
-print "TEST #5", game.handleAction("ccs", Action.UpgradeResourceGenerator, {"generatorName": "LumberMill"}) 
-printPlayerSummary()
-print "Test #6", game.handleAction("ccs", Action.Destroy, {"generatorName": "GoldMine", "targetPlayerName": "jack"}) 
-printPlayerSummary()
-print "Test #7 update event and upcoming event"
-game.updateEventAndGetUpcomingEvents()
-game.updateEventAndGetUpcomingEvents()
-game.updateEventAndGetUpcomingEvents()
-game.updateEventAndGetUpcomingEvents()
-game.updateEventAndGetUpcomingEvents()
-print "Test #8", game.handleAction("ccs", Action.TradeWithBank, {"resourcesOffer": {}, "resourcesRequest": {}}}) 
+# print "TEST #1", game.handleAction("ccs", Action.Build, {"generatorName": "Woodmill"})
+# print "TEST #2", game.handleAction("ccs", Action.Gather, {}) # 14 12 13 
+# printPlayerSummary()
+# print "TEST #3", game.handleAction("ccs", Action.Build, {"generatorName": "Woodmill"}) 
+# printPlayerSummary()
+# print "TEST #4", game.handleAction("ccs", Action.UpgradeResource, {"resourceName": "Lumber"}) 
+# printPlayerSummary()
+# print "TEST #5", game.handleAction("ccs", Action.UpgradeResourceGenerator, {"generatorName": "LumberMill"}) 
+# printPlayerSummary()
+# print "Test #6", game.handleAction("ccs", Action.Destroy, {"generatorName": "GoldMine", "targetPlayerName": "jack"}) 
+# printPlayerSummary()
+# print "Test #7 update event and upcoming event"
+# game.updateEventAndGetUpcomingEvents()
+# game.updateEventAndGetUpcomingEvents()
+# game.updateEventAndGetUpcomingEvents()
+# game.updateEventAndGetUpcomingEvents()
+# game.updateEventAndGetUpcomingEvents()
+
+# resourcesOffer = {"Wood": 2}
+# resourcesRequest = {"Gold": 1}
+# print "Test #8", game.handleAction("jack", Action.TradeWithBank, {"resourcesOffer": resourcesOffer, "resourcesRequest": resourcesRequest}) 
 
 
 # event = EventHandler()
