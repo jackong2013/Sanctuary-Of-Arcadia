@@ -115,8 +115,8 @@ class Game(object):
 			for res, count in resources.items():
 				playerSummary[res.name] = count
 			generator = player.get_generators()
-			for generator, count in generator.items():
-				playerSummary[generator.name] = count 
+			for gen, count in generator.items():
+				playerSummary[gen.name] = count 
 			playerSummary[player.get_name()] = playerSummary
 		return playerSummary
 
@@ -128,8 +128,8 @@ class Game(object):
 			for res, count in resources.items():
 				playerSummary[res.name] = count
 			generator = player.get_generators()
-			for generator, count in generator.items():
-				playerSummary[generator.name] = count 
+			for gen, count in generator.items():
+				playerSummary[gen.name] = count 
 			allPlayerSummaries[player.get_name()] = playerSummary
 		return allPlayerSummaries
 
