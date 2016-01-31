@@ -43,15 +43,13 @@ from random import sample
 
 from game import *
 from player import Player
-from objective import Objective
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
-game = Game([])
+game = None
 room = "hardcode me"
-objectives = sample(xrange(4), 4)
-playercount = 0
+player_names = []
 
 @app.route('/<username>', methods=['GET', 'POST'])
 def login(username):
@@ -61,34 +59,27 @@ def login(username):
 
 @socketio.on('join')
 def join(data):
-    for player in game.players:
-        if (data['name'] == player.get_name()):
-            print 'Error, same name'
-            emit('joinFailed', "Error: A player already has the same name!")
-            return
+    name = data['name']
+    global player_names
 
-    global playercount
-    print type(objectives)
-    print objectives
-    new_player = Player(data['name'], Objective(objectives[playercount]))
-    playercount += 1
-    game.players.append(new_player)
-    print new_player.get_name() + ' has joined!'
+    if name in player_names:
+        print 'Error, same name'
+        emit('joinFailed', "Error: A player already has the same name!")
+        return
 
-    current_players_name = []
-    for player in game.players:
-        current_players_name.append(player.get_name())
+    player_names.append(name)
+    print name + ' has joined!'
 
     join_room(room)
-    emit('joinSuccessful', current_players_name, room=room)
-    if playercount == 4:
-        emit('startGame', current_players_name, room=room)
+    emit('joinSuccessful', player_names, room=room)
+    if len(player_names) == 4:
+        global game
+        game = Game(player_names)
+        emit('startGame', player_names, room=room)
 
 @socketio.on('move')
 def doAction(data):
-    from_player = data['from']
     player_action = data['action']
-    options = None
     action = None
 
     for stuff in Action:
@@ -97,22 +88,23 @@ def doAction(data):
             break;
 
     if (isinstance(action, Action)):
-        game.handleAction(action, options)
+        game.handleAction(action, data)
     else:
         print 'Error, invalid action'
 
 @socketio.on('leave')
 def leave(data):
-    player_name = data['name']
-    game.playerLeft(player_name)
-    print player_name + ' has left!'
+    name = data['name']
+    if game is not None:
+        game.playerLeft(name)
+    
+    print name + ' has left!'
 
-    current_players_name = []
-    for player in game.players:
-        current_players_name.append(player.get_name())
+    global player_names
+    player_names.remove(name)
 
     leave_room(room)
-    emit('playerLeft', current_players_name, room=room)
+    emit('playerLeft', player_names, room=room)
 
 
 @socketio.on('disconnect')
